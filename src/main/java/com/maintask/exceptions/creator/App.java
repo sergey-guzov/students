@@ -1,4 +1,4 @@
-package com.maintask.exceptions;
+package com.maintask.exceptions.creator;
 
 /**
  * Hello world!
