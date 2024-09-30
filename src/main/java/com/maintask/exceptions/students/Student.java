@@ -7,8 +7,6 @@ import com.maintask.exceptions.university.Group;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 public class Student {
 
     private String firstName;
@@ -42,18 +40,11 @@ public class Student {
         this.group = group;
     }
 
-    public boolean addSubject(String subjectName) {
-        Subjects addedSubjectEnum;
-        try {
-           addedSubjectEnum = Subjects.valueOf(subjectName.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("This subject is not exists");
+    public boolean addSubject(Subject subject) {
+        for (Subject s:subjects) {
+            if (s.equals(subject))
+                throw new RuntimeException("Subject already added to the student");
         }
-        for (Subject subject:subjects) {
-            if (subject.getSubject().equals(addedSubjectEnum))
-                throw new RuntimeException("Subject already added");
-        }
-        Subject subject = new Subject(addedSubjectEnum);
         return subjects.add(subject);
     }
 
@@ -89,5 +80,16 @@ public class Student {
         return selectedSubject.get(0).averageGrade();
     }
 
+    public double averageStudentGradeForAllSubjects() {
+        double totalSum = 0;
+        List<Double> studentAverageGrades = getSubjects().stream().map(Subject::averageGrade).toList();
+        if (studentAverageGrades.isEmpty()) throw new RuntimeException("Student doesn't have any grades yet");
+        for (Double grade:studentAverageGrades) {
+            totalSum += grade;
+        }
+        if (totalSum/studentAverageGrades.size() == 0.0) System.out.println("Students have no grades for subjects yet");
+        return totalSum/studentAverageGrades.size();
+
+    }
 
 }
