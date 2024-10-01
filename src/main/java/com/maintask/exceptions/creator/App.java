@@ -15,8 +15,8 @@ public class App {
         university.addFaculty(facultyUPP);
         Group groupUA51 = new Group("UA51",facultyUPP);
         facultyUPP.addGroup(groupUA51);
-        Student student1 = new Student("Sergey", "Guzov", facultyUPP, groupUA51);
-        Student student2 = new Student("Eugeny", "Pinchuck", facultyUPP, groupUA51);
+        Student student1 = new Student("John", "Doe", facultyUPP, groupUA51);
+        Student student2 = new Student("Mick", "Donn", facultyUPP, groupUA51);
         groupUA51.addStudents(student1);
         groupUA51.addStudents(student2);
         Subject subjectMath1 = new Subject(Subjects.MATH);
@@ -27,11 +27,12 @@ public class App {
         subjectMath1.addGrade(8);
         Subject subjectMath2 = new Subject(Subjects.MATH);
         student2.addSubject(subjectMath2);
-        subjectMath2.addGrade(4);
+     /*   subjectMath2.addGrade(4);
         subjectMath2.addGrade(6);
         subjectMath2.addGrade(7);
-        subjectMath2.addGrade(7);
+        subjectMath2.addGrade(7);*/
         System.out.println("Average grade of student1 = " + student1.averageStudentGradeForSubject("math"));
+        System.out.println("Average grade of student1 for all subjects = " + student1.averageStudentGradeForAllSubjects());
         System.out.println("Average grade of student2 = " + student2.averageStudentGradeForSubject("math"));
         System.out.println("Average grade of group = " + groupUA51.averageGroupGradeForSubject("math"));
         System.out.println("Average grade of faculty = " + facultyUPP.averageFacultyGradeForSubject("math"));

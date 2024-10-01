@@ -1,5 +1,6 @@
 package com.maintask.exceptions.students;
 
+import com.maintask.exceptions.exception.StudentGradesException;
 import com.maintask.exceptions.subjects.Subject;
 import com.maintask.exceptions.subjects.Subjects;
 import com.maintask.exceptions.university.Faculty;
@@ -43,7 +44,7 @@ public class Student {
     public boolean addSubject(Subject subject) {
         for (Subject s:subjects) {
             if (s.equals(subject))
-                throw new RuntimeException("Subject already added to the student");
+                throw new StudentGradesException("Subject already added to the student");
         }
         return subjects.add(subject);
     }
@@ -65,7 +66,7 @@ public class Student {
     }
 
     public List<Subject> getSubjects() {
-        if (subjects.isEmpty()) throw new RuntimeException("Student has no subjects. Add new subject for the student!");
+        if (subjects.isEmpty()) throw new StudentGradesException("Student has no subjects. Add new subject for the student!");
         return subjects;
     }
 
@@ -73,21 +74,23 @@ public class Student {
         try {
             Subjects.valueOf(subject.toUpperCase());
         } catch (IllegalArgumentException e){
-            throw new RuntimeException("This subject is not exists");
+            throw new StudentGradesException("This subject is not exists");
         }
         List<Subject> selectedSubject = getSubjects().stream().filter(s -> s.getSubject().name().equalsIgnoreCase(subject)).toList();
-        if (selectedSubject.isEmpty()) throw new RuntimeException("Student doesn't have selected subject");
+        if (selectedSubject.isEmpty()) throw new StudentGradesException("Student doesn't have selected subject");
+        if (selectedSubject.get(0).averageGrade() == -1.0)  throw new StudentGradesException("Student doesn't have any grades yet");
         return selectedSubject.get(0).averageGrade();
     }
 
     public double averageStudentGradeForAllSubjects() {
         double totalSum = 0;
+        double valueStudentWithoutGrades = -1.0;
         List<Double> studentAverageGrades = getSubjects().stream().map(Subject::averageGrade).toList();
-        if (studentAverageGrades.isEmpty()) throw new RuntimeException("Student doesn't have any grades yet");
-        for (Double grade:studentAverageGrades) {
+        List<Double> studentsAverageGradeExcludedStudentWithoutGrades = studentAverageGrades.stream().filter(d -> !d.equals(valueStudentWithoutGrades)).toList();
+        if (studentsAverageGradeExcludedStudentWithoutGrades.isEmpty()) throw new StudentGradesException("Student doesn't have any grades yet");
+        for (Double grade:studentsAverageGradeExcludedStudentWithoutGrades) {
             totalSum += grade;
         }
-        if (totalSum/studentAverageGrades.size() == 0.0) System.out.println("Students have no grades for subjects yet");
         return totalSum/studentAverageGrades.size();
 
     }

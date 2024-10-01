@@ -1,5 +1,6 @@
 package com.maintask.exceptions.university;
 
+import com.maintask.exceptions.exception.GroupGradeException;
 import com.maintask.exceptions.students.Student;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class Group {
     }
 
     public List<Student> getStudents() {
-        if (students.isEmpty()) throw new RuntimeException("No students attached to the group. Add at least one!");
+        if (students.isEmpty()) throw new GroupGradeException("No students attached to the group. Add at least one!");
         return students;
     }
 
@@ -32,7 +33,7 @@ public class Group {
 
     public boolean addStudents(Student student) {
         List<Student> duplicatedStudent = students.stream().filter(s -> s.equals(student)).toList();
-        if (!duplicatedStudent.isEmpty()) throw new RuntimeException("This student is already added to the group");
+        if (!duplicatedStudent.isEmpty()) throw new GroupGradeException("This student is already added to the group");
         return students.add(student);
     }
 
@@ -42,15 +43,14 @@ public class Group {
 
     public double averageGroupGradeForSubject (String subject) {
         Double valueStudentWithoutGrades = -1.0;
-
         List<Double> studentsAverageGrade = getStudents().stream().map(student -> student.averageStudentGradeForSubject(subject)).toList();
-        if (studentsAverageGrade.isEmpty()) throw new RuntimeException("Students doesn't have selected subject " + subject);
+        if (studentsAverageGrade.isEmpty()) throw new GroupGradeException("Students doesn't have selected subject " + subject);
         List<Double> studentsAverageGradeExcludedStudentWithoutGrades = studentsAverageGrade.stream().filter(d -> !d.equals(valueStudentWithoutGrades)).toList();
+        if (studentsAverageGradeExcludedStudentWithoutGrades.isEmpty()) throw new GroupGradeException("Students have no grades for selected subject yet");
         double totalSum = 0.0;
         for (Double grade:studentsAverageGradeExcludedStudentWithoutGrades) {
             totalSum += grade;
         }
-        if (totalSum/studentsAverageGradeExcludedStudentWithoutGrades.size() == 0.0) System.out.println("Students have no grades for selected subject yet");
         return totalSum/studentsAverageGradeExcludedStudentWithoutGrades.size();
     }
 }
